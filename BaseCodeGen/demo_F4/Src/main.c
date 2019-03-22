@@ -54,6 +54,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "application.h"
 
 /* USER CODE END Includes */
 
@@ -73,9 +74,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-osThreadId defaultTaskHandle;
-osThreadId ledHandle;
-osThreadId buttonHandle;
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -83,9 +82,7 @@ osThreadId buttonHandle;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-void StartDefaultTask(void const * argument);
-void ledTask(void const * argument);
-void buttonTask(void const * argument);
+
 
 /* USER CODE BEGIN PFP */
 
@@ -140,31 +137,7 @@ int main(void)
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
 
-  /* Create the thread(s) */
-  /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
-  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
-
-  /* definition and creation of led */
-  osThreadDef(led, ledTask, osPriorityIdle, 0, 128);
-  ledHandle = osThreadCreate(osThread(led), NULL);
-
-  /* definition and creation of button */
-  osThreadDef(button, buttonTask, osPriorityIdle, 0, 128);
-  buttonHandle = osThreadCreate(osThread(button), NULL);
-
-  /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
-  /* USER CODE END RTOS_THREADS */
-
-  /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
-  /* USER CODE END RTOS_QUEUES */
- 
-
-  /* Start scheduler */
-  osKernelStart();
-  
+  application();
   /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
@@ -249,73 +222,6 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_StartDefaultTask */
-/**
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used 
-  * @retval None
-  */
-/* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void const * argument)
-{
-
-  /* USER CODE BEGIN 5 */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END 5 */ 
-}
-
-/* USER CODE BEGIN Header_ledTask */
-/**
-* @brief Function implementing the led thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_ledTask */
-void ledTask(void const * argument)
-{
-	static int status = 0;
-  /* USER CODE BEGIN ledTask */
-  /* Infinite loop */
-  for(;;)
-  {
-	  if ( status )
-		{
-		  GPIOD->ODR |= 0x000E000;
-
-		}else
-		{
-			GPIOD->ODR  &= ~(0x000E000);
-		}
-	  status = !status;
-	  /*
-	  HAL_GPIO_TogglePin(GPIOD, LD4_Pin);
-	  GPIOD = GPIOD*/
-	  osDelay(500);
-  }
-  /* USER CODE END ledTask */
-}
-
-/* USER CODE BEGIN Header_buttonTask */
-/**
-* @brief Function implementing the button thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_buttonTask */
-void buttonTask(void const * argument)
-{
-  /* USER CODE BEGIN buttonTask */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END buttonTask */
-}
 
 /**
   * @brief  This function is executed in case of error occurrence.
