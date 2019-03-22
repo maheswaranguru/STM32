@@ -8,57 +8,46 @@
 #include "application.h"
 #include "button.h"
 #include "led.h"
+#include "freertos.h"
+#include "task.h"
+
+void debugconsoleTask(void);
+
+/* Private Constant -----------------------------------------------*/
+sysTask_t sysTask[] =
+{
+    { (TaskFunction_t) ledTask, "Led", 128, 0, osPriorityNormal, NULL },
+    { (TaskFunction_t) buttonTask, "button", 128, 0, osPriorityNormal, NULL },
+    { (TaskFunction_t) debugconsoleTask, "debugconsole", 128, 0, osPriorityNormal, NULL }
+};
 
 /* Private function prototypes -----------------------------------------------*/
-void StartDefaultTask(void const * argument);
 
 /* Private variables ---------------------------------------------------------*/
 osThreadId defaultTaskHandle;
 osThreadId ledHandle;
 osThreadId buttonHandle;
 
-void application( void )
+TaskHandle_t xHandle = NULL;
+
+void application(void)
 {
+    volatile static uint8_t TaskStatus = 1;
 
-	 /* Create the thread(s) */
-	  /* definition and creation of defaultTask */
-	  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
-	  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+    /* Create the thread(s) */
+    TaskStatus = xTaskCreate(sysTask[LED_TASK].vTaskfunPtr, sysTask[LED_TASK].vTaskName, sysTask[LED_TASK].stacksize, sysTask[LED_TASK].VTaskparaeter, sysTask[LED_TASK].VtaskPriority, sysTask[LED_TASK].pxCreatedTask);
+    TaskStatus = xTaskCreate(sysTask[BUTTON_TASK].vTaskfunPtr, sysTask[BUTTON_TASK].vTaskName, sysTask[BUTTON_TASK].stacksize, sysTask[BUTTON_TASK].VTaskparaeter, sysTask[BUTTON_TASK].VtaskPriority, sysTask[BUTTON_TASK].pxCreatedTask);
+    TaskStatus = xTaskCreate(sysTask[CONSOLE_TASK].vTaskfunPtr, sysTask[CONSOLE_TASK].vTaskName, sysTask[CONSOLE_TASK].stacksize, sysTask[CONSOLE_TASK].VTaskparaeter, sysTask[CONSOLE_TASK].VtaskPriority, sysTask[CONSOLE_TASK].pxCreatedTask);
 
-	  /* definition and creation of led */
-	  osThreadDef(led, ledTask, osPriorityIdle, 0, 128);
-	  ledHandle = osThreadCreate(osThread(led), NULL);
+    /* Start scheduler */
+    osKernelStart();
 
-	  /* definition and creation of button */
-	  osThreadDef(button, buttonTask, osPriorityIdle, 0, 128);
-	  buttonHandle = osThreadCreate(osThread(button), NULL);
-
-
-
-	  /* Start scheduler */
-	  osKernelStart();
-
-	  while(1);
 }
 
-/***********************************************************
- *  USER CODE BEGIN Header_StartDefaultTask */
-/***********************************************************
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used
-  * @retval None
-  ***********************************************************/
-
-void StartDefaultTask(void const * argument)
+void debugconsoleTask(void)
 {
-
-  /* USER CODE BEGIN 5 */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END 5 */
+    for (;;)
+    {
+        vTaskDelay(1);
+    }
 }
-
-
