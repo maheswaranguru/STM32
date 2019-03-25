@@ -6,7 +6,7 @@
  */
 
 #include "led.h"
-
+#include "sysConfigEsab.h"
 
 void ledTask(void const * argument)
 {
@@ -27,7 +27,7 @@ void ledTask(void const * argument)
 	  /*
 	  HAL_GPIO_TogglePin(GPIOD, LD4_Pin);
 	  GPIOD = GPIOD*/
-	  osDelay(50);
+	  vTaskDelay(500);
   }
 
 

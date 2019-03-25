@@ -16,9 +16,9 @@ void debugconsoleTask(void);
 /* Private Constant -----------------------------------------------*/
 sysTask_t sysTask[] =
 {
-    { (TaskFunction_t) ledTask, "Led", 128, 0, osPriorityNormal, NULL },
-    { (TaskFunction_t) buttonTask, "button", 128, 0, osPriorityNormal, NULL },
-    { (TaskFunction_t) debugconsoleTask, "debugconsole", 128, 0, osPriorityNormal, NULL }
+    { (TaskFunction_t) ledTask,             "Led",              128, 0, osPriorityNormal, NULL },
+    { (TaskFunction_t) buttonTask,          "button",           128, 0, osPriorityNormal, NULL },
+    { (TaskFunction_t) debugconsoleTask,    "debugconsole",     128, 0, osPriorityNormal, NULL }
 };
 
 /* Private function prototypes -----------------------------------------------*/
