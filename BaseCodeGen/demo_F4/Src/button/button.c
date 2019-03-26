@@ -11,6 +11,9 @@
 
 //#include "led.h"
 
+//!< Local function declaration
+void intiButton(void);
+
 enum
 {
     SWITCH = 0,
@@ -19,7 +22,9 @@ enum
 
 const digInputPinConfig_t key [ MAXIMUM_BUTTON ] =
 {
-{ GPIOA, GPIO_PIN_0 } };     // MAHESH : NEED TO RE-STRUCTURE TO COVER ALL GPIO/KEY PARAMETER.
+{ GPIOA, { GPIO_PIN_0, GPIO_MODE_INPUT, GPIO_NOPULL, GPIO_SPEED_FREQ_LOW, 0 }}
+
+};     // MAHESH : NEED TO RE-STRUCTURE TO COVER ALL GPIO/KEY PARAMETER.
 
 volatile keyReadStatus_t keyStatus;
 
@@ -43,7 +48,7 @@ void buttonTask(void const * argument)
 
         for ( i = 0; i < MAXIMUM_BUTTON; i++ )      //!< Read all the keys one-by-one.
         {
-            teamPinStatus = READ_PIN(key [ i ].port, key [ i ].pin);
+            teamPinStatus = READ_PIN(key [ i ].port, key [ i ].pinConfig.Pin );
 
             if ( teamPinStatus )           //!< Update pin status / voltage level on corresponding bit.
             {

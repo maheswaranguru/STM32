@@ -14,7 +14,7 @@
 void debugconsoleTask(void);
 
 /* Private Constant -----------------------------------------------*/
-sysTask_t sysTask[] =
+const sysTask_t sysTask[] =
 {
     { (TaskFunction_t) ledTask,             "Led",              128, 0, osPriorityNormal, NULL },
     { (TaskFunction_t) buttonTask,          "button",           128, 0, osPriorityNormal, NULL },
@@ -32,12 +32,21 @@ TaskHandle_t xHandle = NULL;
 
 void application(void)
 {
-    volatile static uint8_t TaskStatus = 1;
+    volatile uint8_t i = 0;
+    volatile uint8_t TaskStatus = 0;
 
-    /* Create the thread(s) */
-    TaskStatus = xTaskCreate(sysTask[LED_TASK].vTaskfunPtr, sysTask[LED_TASK].vTaskName, sysTask[LED_TASK].stacksize, sysTask[LED_TASK].VTaskparaeter, sysTask[LED_TASK].VtaskPriority, sysTask[LED_TASK].pxCreatedTask);
-    TaskStatus = xTaskCreate(sysTask[BUTTON_TASK].vTaskfunPtr, sysTask[BUTTON_TASK].vTaskName, sysTask[BUTTON_TASK].stacksize, sysTask[BUTTON_TASK].VTaskparaeter, sysTask[BUTTON_TASK].VtaskPriority, sysTask[BUTTON_TASK].pxCreatedTask);
-    TaskStatus = xTaskCreate(sysTask[CONSOLE_TASK].vTaskfunPtr, sysTask[CONSOLE_TASK].vTaskName, sysTask[CONSOLE_TASK].stacksize, sysTask[CONSOLE_TASK].VTaskparaeter, sysTask[CONSOLE_TASK].VtaskPriority, sysTask[CONSOLE_TASK].pxCreatedTask);
+    for( i = 0; i< MAXMUM_TASK; i++)
+    {
+        if( pdPASS !=  xTaskCreate(sysTask[i].vTaskfunPtr, sysTask[i].vTaskName, sysTask[i].stacksize, sysTask[i].VTaskparaeter, sysTask[i].VtaskPriority, sysTask[i].pxCreatedTask) )
+        {
+            TaskStatus++;
+        }
+    }
+
+    if( 0 != TaskStatus )       //!< If any of the task not created successfully, freeze here !
+    {
+        while(1);
+    }
 
     /* Start scheduler */
     osKernelStart();
