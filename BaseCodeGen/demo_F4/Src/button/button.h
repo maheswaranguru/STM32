@@ -11,17 +11,24 @@
 #include "cmsis_os.h"
 #include "stm32f4xx_hal.h"
 
-#define KEY_DEBOUNCE_CNT  3
+#define KEY_POLLING_INTERVEL    10          //!< (1/configTICK_RATE_HZ) Second - ( currently it is X*1ms)
+#define KEY_DEBOUNCE_CNT        3          //!< debounce time = KEY_POLLING_INTERVEL * KEY_DEBOUNCE_CNT
 
+typedef enum
+{
+    RELEASED = 0, PRESSED
+} keyStat_t;
 
 //!< This structure will support upto 32 key. if you
-typedef struct{
-    uint32_t    currentStatus;
-    uint32_t    newStatus;
-    uint32_t    latchedStatus;
-    uint8_t     debounceCnt;
-}keyReadStatus_t;
-
+typedef struct
+{
+    uint32_t currentStatus;
+    uint32_t newStatus;
+    uint32_t latchedStatus;
+    uint32_t whichKey;
+    keyStat_t keyStat;
+    uint8_t debounceCnt;
+} keyReadStatus_t;
 
 //!< Extern function from Button.c
 

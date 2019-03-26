@@ -14,7 +14,7 @@
 typedef struct taskpara
 {
 	TaskFunction_t  vTaskfunPtr;
-	char vTaskName[configMAX_TASK_NAME_LEN];
+    char vTaskName[configMAX_TASK_NAME_LEN];
 	unsigned short stacksize;
 	void * VTaskparaeter;
 	UBaseType_t VtaskPriority;

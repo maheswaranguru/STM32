@@ -27,7 +27,7 @@ void ledTask(void const * argument)
 	  /*
 	  HAL_GPIO_TogglePin(GPIOD, LD4_Pin);
 	  GPIOD = GPIOD*/
-	  vTaskDelay(500);
+        vTaskDelay(500);
   }
 
 
