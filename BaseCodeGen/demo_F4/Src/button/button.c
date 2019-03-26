@@ -24,7 +24,7 @@ volatile keyReadStatus_t keyStatus;
 
 void buttonTask(void const * argument)
 {
-uint8_t i = 0;
+volatile uint8_t i = 0;
 volatile bool teamPinStatus;
 
   for(;;)
@@ -55,6 +55,9 @@ volatile bool teamPinStatus;
                   keyStatus.currentStatus = keyStatus.latchedStatus;
                   keyStatus.latchedStatus = 0;
               }
+          }else
+          {
+              keyStatus.latchedStatus = keyStatus.newStatus;        //!< first change detected.
           }
       }
 
