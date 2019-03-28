@@ -9,6 +9,7 @@
 #define BUTTON_BUTTONWRAPPER_H_
 
 #include "stm32f4xx_hal.h"
+#include "button.h"
 
 #define READ_PIN(a,b)       HAL_GPIO_ReadPin((GPIO_TypeDef*)(a), (uint16_t) b )
 #define WRITE_PIN(a,b,c )   HAL_GPIO_WritePin(GPIO_TypeDef* a, uint16_t b, GPIO_PinState c)

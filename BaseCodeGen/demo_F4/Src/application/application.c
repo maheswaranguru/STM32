@@ -10,6 +10,7 @@
 #include "led.h"
 #include "freertos.h"
 #include "task.h"
+#include "queue.h"
 
 void debugconsoleTask(void);
 
@@ -44,6 +45,12 @@ void application(void)
     }
 
     if( 0 != TaskStatus )       //!< If any of the task not created successfully, freeze here !
+    {
+        while(1);
+    }
+
+    gKeyDetectQ = xQueueCreate( 3, sizeof(keyReadStatus_t));
+    if( NULL == gKeyDetectQ )
     {
         while(1);
     }

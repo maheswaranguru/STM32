@@ -8,78 +8,85 @@
 
 #include "button.h"
 #include "buttonWrapper.h"
+#include "queue.h"
 
 //#include "led.h"
 
 //!< Local function declaration
 void intiButton(void);
 
-enum
-{
-    SWITCH = 0,
-    MAXIMUM_BUTTON
-};
-
 const digInputPinConfig_t key [ MAXIMUM_BUTTON ] =
-{
-{ GPIOA, { GPIO_PIN_0, GPIO_MODE_INPUT, GPIO_NOPULL, GPIO_SPEED_FREQ_LOW, 0 }}
 
-};     // MAHESH : NEED TO RE-STRUCTURE TO COVER ALL GPIO/KEY PARAMETER.
+{  { GPIOA, { GPIO_PIN_0, GPIO_MODE_INPUT, GPIO_NOPULL, GPIO_SPEED_FREQ_LOW, 0 } }
 
-volatile keyReadStatus_t keyStatus;
+};     //!< This could be modifiable for match platform driver support.
 
-/****************************************************
+//*********** Static variable declaration *************************************
+keyReadStatus_t mKeyStatus;
+
+QueueHandle_t gKeyDetectQ;
+
+/*********************************************************************************
  *Name :- buttonTask
  *Para1:- argument
  *Return:-N/A
- *Details:-  reset all parameters for new reading.
- *****************************************************/
+ *Details:-  Main task body for button..
+ **********************************************************************************/
 void buttonTask(void const * argument)
 {
     volatile uint8_t i = 0;
-    volatile bool teamPinStatus;
+    volatile bool tempPinStatus;
 
     (void) argument;            //!< Just ignore the parameter.
     intiButton();               //!< Initialize button
 
     for ( ;; )
     {
-        keyStatus.newStatus = 0;      //!< Reset before read all key
+        mKeyStatus.newStatus = 0;      //!< Reset before read all key
 
         for ( i = 0; i < MAXIMUM_BUTTON; i++ )      //!< Read all the keys one-by-one.
         {
-            teamPinStatus = READ_PIN(key [ i ].port, key [ i ].pinConfig.Pin );
+            tempPinStatus = READ_PIN(key [ i ].port, key [ i ].pinConfig.Pin);
 
-            if ( teamPinStatus )           //!< Update pin status / voltage level on corresponding bit.
+            if ( tempPinStatus )           //!< Update pin status / voltage level on corresponding bit.
             {
-                keyStatus.newStatus = (1 << i);
+                mKeyStatus.newStatus = (1 << i);
             }
             else
             {
-                keyStatus.newStatus &= ~(1 << i);
+                mKeyStatus.newStatus &= ~(1 << i);
             }
 
         }
 
-        if ( keyStatus.newStatus != keyStatus.currentStatus )             //!< Some key pressed now !
+        if ( mKeyStatus.newStatus != mKeyStatus.currentStatus )             //!< Some key pressed now !
         {
-            if ( keyStatus.latchedStatus == keyStatus.newStatus )          //!< if it was detected before
+            if ( mKeyStatus.latchedStatus == mKeyStatus.newStatus )          //!< if it was detected before
             {
-                if ( KEY_DEBOUNCE_CNT <= keyStatus.debounceCnt++ )
+                if ( KEY_DEBOUNCE_CNT <= mKeyStatus.debounceCnt++ )
                 {
-                    keyStatus.whichKey = keyStatus.currentStatus ^ keyStatus.newStatus;
-                    keyStatus.currentStatus = keyStatus.latchedStatus;        //!< Update detected/accepted key
+                    mKeyStatus.whichKey = mKeyStatus.currentStatus ^ mKeyStatus.newStatus;
+                    mKeyStatus.currentStatus = mKeyStatus.latchedStatus;        //!< Update detected/accepted key
 
-                    keyStatus.keyStat = (teamPinStatus == 1) ? PRESSED : RELEASED; // MAHESH : THIS NEED TO IMPLIMENT ONCE INITILIZATION STRUCTURE CREATED..
+                    mKeyStatus.keyStat = (tempPinStatus == 1) ? PRESSED : RELEASED; // MAHESH : THIS NEED TO IMPLIMENT ONCE INITILIZATION STRUCTURE CREATED..
                                                                                    // IF NEED TO DETECT ALL KEY RELEASE ONLY... THEN MOVE THIS TO TOP WITH "if"
+                    if ( mKeyStatus.keyStat )
+                    {
+                        // SEND RELEASE MESSAGE
+                        xQueueSend( gKeyDetectQ, &mKeyStatus, 0);
+                    }
+                    else
+                    {
+                        // SEND PRESSED MESSAGE
+                    }
 
-                    keyStatus.debounceCnt = 0;
-                    keyStatus.latchedStatus = 0;
+                    mKeyStatus.debounceCnt = 0;
+                    mKeyStatus.latchedStatus = 0;
                 }
             }
             else
             {
-                keyStatus.latchedStatus = keyStatus.newStatus;        //!< first change detected.
+                mKeyStatus.latchedStatus = mKeyStatus.newStatus;        //!< first change detected.
             }
         }
 
@@ -87,13 +94,24 @@ void buttonTask(void const * argument)
     }
 
 }
-/****************************************************
- *Name :- buttonTask
+
+
+/*********************************************************************************
+ *Name :- intiButton
  *Para1:- argument
  *Return:-N/A
- *Details:-  reset all parameters for new reading.
- *****************************************************/
+ *Details:-  Initialize all the button gpio pins as per the configuration structure data.
+ *NOTE : THIS INITIALIZATION BLOCK MAY BE NEED CHANGE FOR DIFFERENT PLATFORM/DRIVER
+ **********************************************************************************/
 void intiButton(void)
 {
-    // Currently nothing. NEED TO UPDATE "digInputPinConfig_t" with all gpio details.
+    volatile uint8_t i = 0;
+
+    for ( i = 0; i < MAXIMUM_BUTTON; i++ )
+    {
+        HAL_GPIO_Init(key [ i ].port, (GPIO_InitTypeDef *) &key [ i ].pinConfig);
+    }
+
 }
+
+

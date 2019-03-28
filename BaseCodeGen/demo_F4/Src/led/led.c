@@ -8,26 +8,40 @@
 #include "led.h"
 #include "sysConfigEsab.h"
 
+#include "button.h"
+
+keyReadStatus_t* mkeyDetectedPtr;
+
 void ledTask(void const * argument)
 {
-	static int status = 0;
+	static int status = 0x0001000;
+	static int count =0;
 
 
   for(;;)
   {
-	  if ( status )
-		{
-		  GPIOD->ODR |= 0x000F000;
+      while( 0 != uxQueueMessagesWaiting( gKeyDetectQ ))
+      {
+          if( pdPASS == xQueueReceive( gKeyDetectQ, &mkeyDetectedPtr, 0) )
+          {
+              GPIOD->ODR = status;
+              if( count++ >= 3 )
+              {
+                  status = 0x0001000;
+                  count = 0;
+              }else
+              {
+                  status = (status<<1);
+              }
 
-		}else
-		{
-			GPIOD->ODR  &= ~(0x000F000);
-		}
-	  status = !status;
+          }
+      }
+
+
 	  /*
 	  HAL_GPIO_TogglePin(GPIOD, LD4_Pin);
 	  GPIOD = GPIOD*/
-        vTaskDelay(500);
+      //  vTaskDelay(500);
   }
 
 
