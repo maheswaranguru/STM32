@@ -4,13 +4,16 @@
  *  Created on: 22-Mar-2019
  *      Author: gmahez
  */
+#include "freertos.h"
+#include "task.h"
+#include "queue.h"
+
 
 #include "application.h"
 #include "button.h"
 #include "led.h"
-#include "freertos.h"
-#include "task.h"
-#include "queue.h"
+#include "debugConsole.h"
+
 
 void debugconsoleTask(void);
 
@@ -31,6 +34,7 @@ osThreadId buttonHandle;
 
 TaskHandle_t xHandle = NULL;
 
+
 void application(void)
 {
     volatile uint8_t i = 0;
@@ -49,10 +53,16 @@ void application(void)
         while(1);
     }
 
-    gKeyDetectQ = xQueueCreate( 3, sizeof(keyReadStatus_t));
+    gKeyDetectQ = xQueueCreate( 3, sizeof(keyReadStatus_t));    //!< 3 number of keys can stored inside.
     if( NULL == gKeyDetectQ )
     {
         while(1);
+    }
+
+    xMutexDebugUart = xSemaphoreCreateMutex();
+    if( NULL == xMutexDebugUart )
+    {
+        // TURN ON ERROR LED;
     }
 
     /* Start scheduler */
@@ -60,10 +70,3 @@ void application(void)
 
 }
 
-void debugconsoleTask(void)
-{
-    for (;;)
-    {
-        vTaskDelay(1);
-    }
-}
