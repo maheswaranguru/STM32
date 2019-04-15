@@ -10,6 +10,7 @@
 
 #include "cmsis_os.h"
 #include "stm32f4xx_hal.h"
+#include "stm32f4xx_hal_uart.h"
 
 #include "sysConfigEsab.h"
 

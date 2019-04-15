@@ -15,6 +15,9 @@
 #define WRITE_PIN(a,b,c )   HAL_GPIO_WritePin(GPIO_TypeDef* a, uint16_t b, GPIO_PinState c)
 #define READ_PORT( a )      esab_stmF4HAL_ReadPort( GPIO_TypeDef* GPIOx )
 
+
+#define PIN_INIT( a )        { HAL_GPIO_Init(key [ a ].port, (GPIO_InitTypeDef *) &key [ a ].pinConfig); }
+
 typedef struct
 {
     GPIO_TypeDef*   port;
@@ -22,7 +25,12 @@ typedef struct
 }digInputPinConfig_t;
 
 
-//#define READ_PORT()
 
+
+const digInputPinConfig_t key [ MAXIMUM_BUTTON ] =
+
+{  { GPIOA, { GPIO_PIN_0, GPIO_MODE_INPUT, GPIO_NOPULL, GPIO_SPEED_FREQ_LOW, 0 } }
+
+};     //!< This could be modifiable for match platform driver support.
 
 #endif /* BUTTON_BUTTONWRAPPER_H_ */
