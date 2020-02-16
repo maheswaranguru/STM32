@@ -32,8 +32,6 @@ typedef enum{
 }sysTaskList_t;
 
 
-
-
 //Extern Function
 void application( void );
 

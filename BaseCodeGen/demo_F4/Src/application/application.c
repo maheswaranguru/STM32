@@ -14,6 +14,8 @@
 #include "led.h"
 #include "debugConsole.h"
 
+//#include ""
+
 
 void debugconsoleTask(void);
 
@@ -22,7 +24,7 @@ const sysTask_t sysTask[] =
 {
     { (TaskFunction_t) ledTask,             "Led",              128, 0, osPriorityNormal, NULL },
     { (TaskFunction_t) buttonTask,          "button",           128, 0, osPriorityNormal, NULL },
-    { (TaskFunction_t) debugconsoleTask,    "debugconsole",     128, 0, osPriorityNormal, NULL }
+    { (TaskFunction_t) debugconsoleTask,    "debugconsole",     256, 0, osPriorityNormal, NULL }
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -65,8 +67,8 @@ void application(void)
         // TURN ON ERROR LED;
     }
 
+
     /* Start scheduler */
     osKernelStart();
-
 }
 

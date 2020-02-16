@@ -4,13 +4,22 @@
  *  Created on: 22-Mar-2019
  *      Author: gmahez
  */
+#include <gpioWrapper.h>
 #include <stdbool.h>
 
 #include "button.h"
-#include "buttonWrapper.h"
 #include "queue.h"
 
-//#include "led.h"
+
+/*****************************************************************************************
+ * @@@@@@@@@@@@@@@@@@   Button GPIO CONFIGURATION @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+******************************************************************************************/
+const gpioPinConfig_t key [ MAXIMUM_BUTTON ] =
+{
+        { GPIOA, { GPIO_PIN_0, GPIO_MODE_INPUT, GPIO_NOPULL, GPIO_SPEED_FREQ_LOW, 0 } }
+};     //!< Note : This could be modifiable for match platform driver support.
+/*@@@@@@@@@@@@@@@@@@@@@ CONFIGURATION END @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+
 
 //!< Local function declaration
 void intiButton(void);
@@ -19,7 +28,7 @@ void intiButton(void);
 //*********** Static variable declaration *************************************
 keyReadStatus_t mKeyStatus;     //!< structure to store key status and change in key status.
 
-QueueHandle_t gKeyDetectQ;      //!<
+QueueHandle_t gKeyDetectQ;      //!< Message Queue for key pressed
 
 /*********************************************************************************
  *Name :- buttonTask
@@ -104,9 +113,8 @@ void intiButton(void)
 
     for ( i = 0; i < MAXIMUM_BUTTON; i++ )
     {
-        PIN_INIT(i);
+        PIN_INIT( (key [ i ].port), &(key[i].pinConfig));      //!< Macro defined in buttonWrapper.h. May be need to change if required.
     }
-
 }
 
 
