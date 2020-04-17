@@ -1,0 +1,6 @@
+led.c:35:6:ledTask	16	static
+led.c:72:6:intLed	16	static
+led.c:88:6:ledTurnOnAll	16	static
+led.c:103:6:ledTurnOffAll	16	static
+led.c:118:6:ledTurnOn	16	static
+led.c:130:6:ledTurnOff	16	static
