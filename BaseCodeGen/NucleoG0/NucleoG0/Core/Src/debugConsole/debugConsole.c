@@ -20,10 +20,11 @@ QueueHandle_t gDebugConsoleQ;
 
 static bool debugConsoleInit( void );
 
-char tempBuff[50] = { 0 };
+char tempBuff[50] = "123456789";
 bool mDebugConInit = false;
 uint8_t name[] = "Jithu...";
 
+uint32_t number = 0;
 
 void debugconsoleTask(void)
 {
@@ -36,15 +37,20 @@ void debugconsoleTask(void)
 
     for (;;)
     {
-        debugTextValue("\nNOW I CAN PRINT TEST & VALUES\t", 157, DECIMAL );
-        vTaskDelay(2000);
+        debugTextValue("\nNOW I CAN PRINT DECIMAL\t", number, DECIMAL );
+        vTaskDelay(10);
+        debugTextValue("\nNOW I CAN PRINT HEX\t", number, HEX );
+        vTaskDelay(10);
+        debugTextValue("\nNOW I CAN PRINT BINARY\t", number, BINARY );
+        number++;
 
-//        debugText("\nTHIS IS A TEXT MSG TO TEST uart INTERRUPT\t");
-//        vTaskDelay(1000);
-//
-//        debugValue(879, DECIMAL );
-//        vTaskDelay(1000);
+    	if( HAL_UART_ERROR_NONE != HAL_UART_GetError(&huart2) )
+    	{
+    		HAL_UART_DeInit(&huart2);
+    		debugConsoleInit();
+    	}
 
+        vTaskDelay(200);
 
     }
 }
@@ -133,8 +139,11 @@ bool debugTextValue( const char *debugMsg, uint32_t value, uint8_t baseValue )
     bool returnValue = false;
 
     returnValue = debugText( debugMsg );
-    vTaskDelay(100);
-    debugValue( value, baseValue );
+
+    while(   HAL_UART_STATE_READY != HAL_UART_GetState(&huart2) );
+
+    IntToText(value, baseValue, tempBuff);
+    debugText( tempBuff );
 
     return returnValue;
 }
@@ -155,6 +164,7 @@ bool IntToText(uint32_t value, uint8_t base, char * str )
     if( 0 == division )
     {
         *(str+i++) = temp|0x30;
+        *(str+i) = '\0';
     }else
     {
         while ( 0 != division )
@@ -163,15 +173,32 @@ bool IntToText(uint32_t value, uint8_t base, char * str )
             division /= base;
 
             if( ( base == HEX ) && (temp >= DECIMAL) )
+            {
                 *(str+i++) = (temp - DECIMAL ) + 'A';
+             }
             else
+            {
                 *(str+i++) = temp|0x30;
+            }
         }
+       	if( base == HEX )
+		{
+			*(str+i++) = 'x';
+			*(str+i++) = '0';
+			*(str+i++) = ' ';
+		}else if( base == BINARY )
+		{
+			*(str+i++) = '.';
+			*(str+i++) = 'b';
+			*(str+i++) = ' ';
+		}
+
+
+        *(str+i) = '\0';
+        reverseStr(str, i);
     }
 
-    *(str+i) = '\0';
 
-    reverseStr(str, i);
     return true;
 }
 /*********************************************************************************
@@ -190,9 +217,12 @@ void reverseStr(char *str, uint8_t size)
     do
     {
         temp     = *(str+j);
-        *(str+j++) = *(str+i);
-        *(str+i--) = temp;
-        temp = i/2;
+        *(str+j) = *(str+i);
+        *(str+i) = temp;
+        if( i == 0 ) break;		//!<  NEED TO FIND A BETTER WAY TO HANDLE THE UNDERFLOW !
+        i = i-1;
+        j = j +1;
+        temp = (unsigned char) i/2;
     }while( i > j );
 
 }

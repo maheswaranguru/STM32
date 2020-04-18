@@ -1,7 +1,7 @@
-debugConsole.c:28:6:debugconsoleTask	8	static
-debugConsole.c:58:13:debugConsoleInit	16	static
-debugConsole.c:92:6:debugText	24	static
-debugConsole.c:115:6:debugValue	16	static
-debugConsole.c:131:6:debugTextValue	40	static
-debugConsole.c:149:6:IntToText	48	static
-debugConsole.c:184:6:reverseStr	40	static
+debugConsole.c:29:6:debugconsoleTask	8	static
+debugConsole.c:64:13:debugConsoleInit	16	static
+debugConsole.c:98:6:debugText	24	static
+debugConsole.c:121:6:debugValue	16	static
+debugConsole.c:137:6:debugTextValue	40	static
+debugConsole.c:158:6:IntToText	48	static
+debugConsole.c:211:6:reverseStr	32	static

@@ -1,7 +1,9 @@
 #MicroXplorer Configuration settings - do not modify
+FREERTOS.FootprintOK=true
 FREERTOS.INCLUDE_xQueueGetMutexHolder=1
 FREERTOS.INCLUDE_xSemaphoreGetMutexHolder=1
-FREERTOS.IPParameters=Tasks01,INCLUDE_xSemaphoreGetMutexHolder,configTOTAL_HEAP_SIZE,INCLUDE_xQueueGetMutexHolder
+FREERTOS.IPParameters=Tasks01,INCLUDE_xSemaphoreGetMutexHolder,configTOTAL_HEAP_SIZE,INCLUDE_xQueueGetMutexHolder,MEMORY_ALLOCATION,FootprintOK
+FREERTOS.MEMORY_ALLOCATION=0
 FREERTOS.Tasks01=defaultTask,0,128,StartDefaultTask,Default,NULL,Dynamic,NULL,NULL
 FREERTOS.configTOTAL_HEAP_SIZE=4096
 File.Version=6
