@@ -1,4 +1,0 @@
-11:36:59 **** Clean-only build of configuration Debug for project FeederInPsHmi ****
-make -j8 clean 
-rm -rf *
- 
