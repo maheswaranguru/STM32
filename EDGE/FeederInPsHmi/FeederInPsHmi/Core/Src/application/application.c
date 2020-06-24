@@ -14,7 +14,7 @@
 #include "led.h"
 #include "debugConsole.h"
 
-#include "voltManager.h"
+#include "../encoder/encoder.h"
 
 
 void debugconsoleTask(void);

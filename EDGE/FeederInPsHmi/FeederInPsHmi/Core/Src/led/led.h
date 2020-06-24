@@ -42,10 +42,6 @@ typedef struct data
 
 }ledStripData_t;
 
-void ledStripVoldLvlUpdate ( void );
-void ledStripCurrentLvlUpdate ( void );
-void ledStripWeldProcessUpdate ( void );
-void ledStripTopPanelUpdate ( void );
 
 bool updateVoltageDisplay( float displayVolt );
 bool updateCurrentSpeedDisplay( float currentSpeed );

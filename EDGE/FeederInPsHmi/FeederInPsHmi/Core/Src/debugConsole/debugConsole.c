@@ -20,11 +20,9 @@ QueueHandle_t gDebugConsoleQ;
 
 static bool debugConsoleInit( void );
 
-char tempBuff[50] = "123456789";
+char tempBuff[50] = {0};
 bool mDebugConInit = false;
-uint8_t name[] = "Jithu...";
 
-uint32_t number = 0;
 
 void debugconsoleTask(void)
 {
@@ -35,10 +33,20 @@ void debugconsoleTask(void)
         while(1);           ///!< If uart initialization failed, don't run the task
     }else
     {
-    	debugText("\n******************************************** ");
-    	debugText("\nTHIS IS EDGE FEEDER HMI FOR INTEGRATION EVENT ");
-    	debugText("\n#########    SUPER BASIC VERSIOM    ######### ");
-    	debugText("\n**********************************************");
+    	if( HAL_UART_STATE_READY == HAL_UART_GetState( &debugPort ) )
+		{
+			debugText("\n******************************************** ");
+			 vTaskDelay(100);
+			debugText("\nTHIS IS EDGE FEEDER HMI FOR INTEGRATION EVENT ");
+			 vTaskDelay(100);
+			debugText("\n#########    SUPER BASIC VERSIOM    ######### ");
+			 vTaskDelay(100);
+			debugText("\n**********************************************\n");
+			 vTaskDelay(100);
+		}else
+		{
+			while(1);
+		}
     }
 
     for (;;)
@@ -86,7 +94,7 @@ static bool debugConsoleInit( void )
        // Error_Handler(); NEED TO ADD error handling function.
      }else
      {
-         __HAL_UART_ENABLE_IT(&debugPort, UART_IT_TC);
+        // __HAL_UART_ENABLE_IT(&debugPort, UART_IT_TC);
      }
 
 
@@ -108,9 +116,8 @@ bool debugText( const char *debugMsg )
 
     if( mDebugConInit )
     {
-       // if( HAL_OK == HAL_UART_Transmit_IT(&debugPort, (uint8_t *)msg, strlen(msg)) )
-            if( HAL_OK == HAL_UART_Transmit(&debugPort, (uint8_t *)msg, strlen(msg), 1000) )
-
+        //if( HAL_OK == HAL_UART_Transmit_IT(&debugPort, (uint8_t *)msg, strlen(msg)) )
+        if( HAL_OK == HAL_UART_Transmit(&debugPort, (uint8_t *)msg, strlen(msg), 1000) )
         {
             returnValue = true;
         }

@@ -81,12 +81,19 @@ void ledTask(void const * argument)
   {
 	  if( HeartbeatTime++ >= HB_ELAPSE_TIME_MS)
 	  {
-//		ledToggle( GREEN );
+		ledToggle( GREEN );
 		ledToggle( RED );
 		HeartbeatTime = 0;
 	  }
 
-	   if ( incrementTime++ >=INCREMENTTIME  )
+		if( false != ledStripUpdate_f )
+		{
+			updateLedStrip( &newDataLedStrip );
+			ledStripUpdate_f = false;
+		}
+
+
+/*	   if ( incrementTime++ >=INCREMENTTIME  )
 	   {
 		   incrementTime = 0;
 
@@ -102,9 +109,9 @@ void ledTask(void const * argument)
 			   ledStripUpdate_f = false;
 		   }
 		  // debugTextValue( "\nValue =", num, DECIMAL );
-	   }
+	   }*/
 
-	  vTaskDelay(100);
+	  vTaskDelay(10);
 
 
   }//!< for ever loop for task
