@@ -39,6 +39,15 @@ void voltageMgrTask(void const * argument)
 
 				encoder[volt].RotOldPosi = encoder[volt].RotNewPosi;
 			}
+
+			if(encoder[current].RotNewPosi != encoder[current].RotOldPosi )
+			{
+				updateCurrentSpeedDisplay( (float)(encoder[current].RotNewPosi ) );
+				debugTextValue("\n\t\t\tCURRENT : ", encoder[current].RotNewPosi, DECIMAL );
+
+				encoder[current].RotOldPosi = encoder[current].RotNewPosi;
+			}
+
 		}
 
 		vTaskDelay(1);
@@ -94,7 +103,51 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		{
 			encoder[volt].RotA_f = true;
 		}
-
 	}
+
+
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      VOLTAGE END     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+
+	if( GPIO_Pin == GPIO_PIN_13 )		//!< this one need to choose carefully.
+	{
+		//HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8 );
+		if(encoder[current].RotA_f)
+		{
+			if(encoder[current].RotNewPosi > 0)
+			{
+				encoder[current].RotNewPosi--;		//!< clockwise OR anti-clockwise.
+			}else
+			{
+				encoder[current].RotNewPosi = 0;
+			}
+			encoder[current].RotA_f = false;
+			encoder[current].RotB_f = false;
+		}else
+		{
+			encoder[current].RotB_f = true;
+		}
+	}
+
+	if( GPIO_Pin == GPIO_PIN_14 )
+	{
+		//HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9 );
+		if(encoder[current].RotB_f)
+		{
+			if( encoder[current].RotNewPosi < 999 )
+			{
+				encoder[current].RotNewPosi++;
+			}else
+			{
+				encoder[current].RotNewPosi = 999;
+			}
+
+			encoder[current].RotA_f = false;
+			encoder[current].RotB_f = false;
+		}else
+		{
+			encoder[current].RotA_f = true;
+		}
+	}
+	/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      CURRENT END     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 
 }

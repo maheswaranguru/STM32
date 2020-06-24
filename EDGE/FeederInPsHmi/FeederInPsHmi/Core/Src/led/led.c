@@ -66,9 +66,9 @@ uint8_t num = 0;
 
 void ledTask(void const * argument)
 {
-	uint16_t HeartbeatTime = 0;
-	uint16_t incrementTime = 0;
     (void) argument;            //!< Just ignore the parameter.
+
+	uint16_t HeartbeatTime = 0;
 
 
     intLed();               //!< Initialize Led
@@ -91,25 +91,6 @@ void ledTask(void const * argument)
 			updateLedStrip( &newDataLedStrip );
 			ledStripUpdate_f = false;
 		}
-
-
-/*	   if ( incrementTime++ >=INCREMENTTIME  )
-	   {
-		   incrementTime = 0;
-
-		   if ( num++ >= 1000 )
-			 num = 0;
-
-		   updateVoltageDisplay( num );
-		   updateCurrentSpeedDisplay( num );
-
-		   if( false != ledStripUpdate_f)
-		   {
-			   updateLedStrip( &newDataLedStrip );
-			   ledStripUpdate_f = false;
-		   }
-		  // debugTextValue( "\nValue =", num, DECIMAL );
-	   }*/
 
 	  vTaskDelay(10);
 
