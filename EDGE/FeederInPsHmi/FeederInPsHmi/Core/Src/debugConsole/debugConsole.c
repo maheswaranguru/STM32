@@ -33,6 +33,12 @@ void debugconsoleTask(void)
     if( ! debugConsoleInit() )
     {
         while(1);           ///!< If uart initialization failed, don't run the task
+    }else
+    {
+    	debugText("\n******************************************** ");
+    	debugText("\nTHIS IS EDGE FEEDER HMI FOR INTEGRATION EVENT ");
+    	debugText("\n#########    SUPER BASIC VERSIOM    ######### ");
+    	debugText("\n**********************************************");
     }
 
     for (;;)

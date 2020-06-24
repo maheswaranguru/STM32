@@ -18,7 +18,7 @@
 #define OE_GPIO_Port GPIOE
 
 
-#define HB_ELAPSE_TIME_MS	2		//!<
+#define HB_ELAPSE_TIME_MS	30		//!<
 #define TASK_EXE_DELAY		100
 
 /*****************************************************************************************
@@ -55,7 +55,7 @@ SPI_HandleTypeDef ledStripSpiStruct;
 ledStripData_t newDataLedStrip;
 bool ledStripUpdate_f = false;
 
-char digit[50] = { 0 };
+char digit[10] = { 0 };
 
 #define INCREMENTTIME 10
 uint8_t num = 0;
@@ -70,25 +70,18 @@ void ledTask(void const * argument)
 	uint16_t incrementTime = 0;
     (void) argument;            //!< Just ignore the parameter.
 
-    float fnum = 1.12;
-
-    char formatStr2[20];
-     sprintf(formatStr2, "%s.%dlf", "%", 1);
-
 
     intLed();               //!< Initialize Led
     intLedStrip();
     ledTurnOffAll();
     ledToggle( GREEN );
 
-    num = 0;
-    sprintf(digit, "%.2f",  fnum );
 
   for(;;)
   {
 	  if( HeartbeatTime++ >= HB_ELAPSE_TIME_MS)
 	  {
-		ledToggle( GREEN );
+//		ledToggle( GREEN );
 		ledToggle( RED );
 		HeartbeatTime = 0;
 	  }
@@ -108,7 +101,7 @@ void ledTask(void const * argument)
 			   updateLedStrip( &newDataLedStrip );
 			   ledStripUpdate_f = false;
 		   }
-		   debugTextValue( "\nValue =", num, DECIMAL );
+		  // debugTextValue( "\nValue =", num, DECIMAL );
 	   }
 
 	  vTaskDelay(100);
@@ -331,7 +324,7 @@ void selfTestPowerOnLedStrip( void )
 #endif
 	   newDataLedStrip.digit3AmpsSpeed = 0x00;
 	   updateLedStrip( &newDataLedStrip );
-	   vTaskDelay(3000);
+	   vTaskDelay(500);
 
 }
 /*************************************************************************************
@@ -344,16 +337,18 @@ bool updateLedStrip( ledStripData_t * newData )
 {
 	bool retValue = true;
 
-	WRITE_PIN( LE_GPIO_Port, LE_Pin, LOW );
-	WRITE_PIN( OE_GPIO_Port, OE_Pin, HIGH );
+	WRITE_PIN( LE_GPIO_Port, LE_Pin, LOW );		//!< Latch Enable
+	WRITE_PIN( OE_GPIO_Port, OE_Pin, HIGH );	//!< Output Disable
 	vTaskDelay(1);
-	if( HAL_OK !=  HAL_SPI_Transmit( &ledStripSpiStruct, (uint8_t*)newData, (uint16_t)sizeof(ledStripData_t), 1000 ) )
-	{
-		retValue = false;
-	}
+
+		if( HAL_OK !=  HAL_SPI_Transmit( &ledStripSpiStruct, (uint8_t*)newData, (uint16_t)sizeof(ledStripData_t), 1000 ) )
+		{
+			retValue = false;
+		}
+
 	vTaskDelay(1);
-	WRITE_PIN( OE_GPIO_Port, OE_Pin, LOW );
-	WRITE_PIN( LE_GPIO_Port, LE_Pin, HIGH );
+	WRITE_PIN( OE_GPIO_Port, OE_Pin, LOW );		//!< Output Enable
+	WRITE_PIN( LE_GPIO_Port, LE_Pin, HIGH );	//!< Latch Disable
 	vTaskDelay(1);
 
 	return( retValue );
@@ -419,14 +414,14 @@ bool updateCurrentSpeedDisplay( float currentSpeed )
 
 /*************************************************************************************
  *Name  : updateSevenSegEncode
- *Para1 : buffer to store
+ *Para1 : buffer to store digits
  *Para2 :
  *Return: if valid value return true, else false.
  *Note	: form a string with 7-segment encoder data.
  ************************************************************************************/
 bool updateSevenSegDecoder( char *buf , float value )
 {
-	const uint8_t decode7Segment[10] = {0x77, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F };		//!< This is only mapped for PS HMI board.!!!
+	const uint8_t decode7Segment[10] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F };		//!< This is only mapped for PS HMI board.!!!
 	uint8_t temp = 0;
 
 	uint8_t i = 0;
@@ -444,27 +439,9 @@ bool updateSevenSegDecoder( char *buf , float value )
 
 	}else
 	{
-/*		if( value < 10 )			//!< I just defining resolution for my display digit/ segment
-		{
-			sprintf(buf, "%.2f", value );
-
-		}else if( value < 100)
-		{
-			sprintf(buf, "%.1f", value );
-
-		}else  if( ( value >= 100) && ( value < 1000 ) )
-		{
-			sprintf(buf, "%f", value );
-
-		}else
-		{
-			sprintf(buf, "%d", 999);
-		}
-
-*/
 		if( value < 10 )			//!< I just defining resolution for my display digit/ segment
-		{
-			fractNum = (int)(value * 100) % 100;
+		{														//!< MAHESH G : WE HAVE ISSUE WITH SPRINTF FOR FLOAT TYPE. THAYS WHY,
+			fractNum = (int)(value * 100) % 100;				//!< I USE SOME MANUAL METHOD. MAY BE MODIFIED IF FOUND EFFECIENT ONE !!!
 			wholeNum = value;
 			sprintf(buf, "%d.%d", wholeNum,fractNum );
 
@@ -494,7 +471,7 @@ bool updateSevenSegDecoder( char *buf , float value )
 				maxdig++;
 			}else
 			{
-				temp = ( temp &0x0F );
+				temp = ( temp & 0x0F );
 				temp = decode7Segment[temp];
 				*(buf+currentDig++) = temp;
 			}

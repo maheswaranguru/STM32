@@ -30,6 +30,7 @@ typedef enum{
 	LED_TASK,
 	//BUTTON_TASK,
 	CONSOLE_TASK,
+	VOLTMANAGER,
 	MAXMUM_TASK
 }sysTaskList_t;
 
