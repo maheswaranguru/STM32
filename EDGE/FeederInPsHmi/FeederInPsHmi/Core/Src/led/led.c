@@ -6,6 +6,7 @@
  */
 #include <stdio.h>
 #include "gpioWrapper.h"
+#include "debugConsole.h"
 
 #include "led.h"
 
@@ -107,6 +108,7 @@ void ledTask(void const * argument)
 			   updateLedStrip( &newDataLedStrip );
 			   ledStripUpdate_f = false;
 		   }
+		   debugTextValue( "\nValue =", num, DECIMAL );
 	   }
 
 	  vTaskDelay(100);
