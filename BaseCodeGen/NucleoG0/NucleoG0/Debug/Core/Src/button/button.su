@@ -1,2 +1,3 @@
-button.c:40:6:buttonTask	32	static
-button.c:117:6:intiButton	16	static
+button.c:58:6:buttonTask	16	static
+button.c:203:6:externalchipkeyRead	8	static
+button.c:210:6:initExternalKeyReadChip	8	static

@@ -19,6 +19,13 @@
 #define PIN_INIT( a, b )        { HAL_GPIO_Init((GPIO_TypeDef*)(a), (GPIO_InitTypeDef *) b ); }
 
 
+typedef struct
+{
+    GPIO_TypeDef*   port;
+    GPIO_InitTypeDef pinConfig;
+    bool currentPinState;
+    bool buttonDetectStat;
+}gpioPinConfig_t;
 
 
 
