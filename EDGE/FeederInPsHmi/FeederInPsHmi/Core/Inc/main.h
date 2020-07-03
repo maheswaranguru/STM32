@@ -54,7 +54,10 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+#define IP_ADDR0   192
+#define IP_ADDR1   168
+#define IP_ADDR2   1
+#define IP_ADDR3   15
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

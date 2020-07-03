@@ -21,10 +21,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "lwip.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "application.h"
+//#include "lwip/api.h"
+//#include "lwip/sys.h"
+//#include "netconf.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -196,6 +200,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+  HAL_RCC_MCOConfig(RCC_MCO1, RCC_MCO1SOURCE_HSE, RCC_MCODIV_1);
 }
 
 /**
@@ -281,8 +286,10 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOE_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOG_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOE, LE_Pin|OE_Pin, GPIO_PIN_RESET);
@@ -310,6 +317,14 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : PA8 */
+  GPIO_InitStruct.Pin = GPIO_PIN_8;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Alternate = GPIO_AF0_MCO;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
@@ -332,10 +347,35 @@ static void MX_GPIO_Init(void)
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void *argument)
 {
+  /* init code for LWIP */
+  MX_LWIP_Init();
   /* USER CODE BEGIN 5 */
+
+ /* conn = netconn_new(NETCONN_UDP);
+  if (conn!= NULL) {
+    err = netconn_bind(conn, IP_ADDR_ANY, 7);
+*/
   /* Infinite loop */
   for(;;)
   {
+	  /*  if (err == ERR_OK)
+	  {
+		    pcb = udp_new();
+		    udp_bind(pcb, &dstaddr, src_port);
+		    //udp_recv(pcb, RecvUTPCallBack, NULL);
+		    udp_connect(pcb, &dstaddr, dst_port);
+
+		    pb = pbuf_alloc(PBUF_TRANSPORT, sizeof((str)), PBUF_REF);
+		    pb->payload = str;
+		    pb->len = pb->tot_len = sizeof((str));
+
+		    udp_sendto(pcb, pb, &dstaddr, dst_port);
+		    udp_disconnect(pcb);
+		    udp_remove(pcb);
+		    pbuf_free(pb);
+		    vTaskDelay(1000);
+	   }*/
+
 
     osDelay(1);
   }
