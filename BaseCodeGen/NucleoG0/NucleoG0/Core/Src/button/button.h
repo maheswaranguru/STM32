@@ -18,9 +18,15 @@
 /*************************************************************************
 *@@@@@@@@@@@@@@@@@@@@@@@@ CONFIGURATION PARAMETERS @@@@@@@@@@@@@@@@@@@@@@
 *************************************************************************/
+//#define PUSH_BUTTON
+//#define MATRIX_KEYBOARD
+#define EXTERNAL_CHIP_READ
+
+
 #define KEY_POLLING_INTERVEL    10          //!< (1/configTICK_RATE_HZ) Second - ( currently it is X*1ms)
 #define KEY_DEBOUNCE_CNT        3          //!< debounce time = KEY_POLLING_INTERVEL * KEY_DEBOUNCE_CNT
 
+#ifdef PUSH_BUTTON
 /***********************************************************************
 *      NEED TO ADD NEW ENUM VALUES , IF YOU WANT ADD NEW KEYS.
 *      FIRST VALUE SHOULD BE ZERO (0) AND IT SHOULD INCREMENT
@@ -33,24 +39,16 @@ typedef enum
     MAXIMUM_BUTTON
 }eKeyName_t;
 
+#endif
+
+/*************************************************************************
+* @@@@@@@@@@@@@@@@@@@@@@@@ END OF CONFIGURATION @@@@@@@@@@@@@@@@@@@@@@@@@@
+**************************************************************************/
 typedef enum
 {
 	PRESSED= 0,
 	RELEASED
 }eKeyStat_t;
-
-
-typedef struct
-{
-    GPIO_TypeDef*   port;
-    GPIO_InitTypeDef pinConfig;
-    bool defaultState;
-    eKeyStat_t keyDetectStat;
-}gpioPinConfig_t;
-
-/*************************************************************************
-* @@@@@@@@@@@@@@@@@@@@@@@@ END OF CONFIGURATION @@@@@@@@@@@@@@@@@@@@@@@@@@
-**************************************************************************/
 
 
 //!< This structure will support upto 32 key.
@@ -59,15 +57,14 @@ typedef struct
     uint32_t currentStatus;     //!< store stable current key status.
     uint32_t newStatus;         //!< Just read / temporary read pin updated value.
     uint32_t latchedStatus;     //!< Store to first detected change on key.
-    uint32_t whichKey;          //!<
-   // eKeyStat_t keyStat;
+    uint32_t whichButton;          //!<
     uint8_t debounceCnt;
-} keyReadStatus_t;
+} buttonReadStatus_t;
 
 typedef struct
 {
 	uint32_t allKeyStatus;
-	uint8_t whichKey;
+	uint8_t whichButton;
 
 }keyMsgData_t;
 

@@ -55,7 +55,7 @@ void application(void)
         while(1);
     }
 
-    gKeyDetectQ = xQueueCreate( 3, sizeof(keyReadStatus_t));    //!< 3 number of keys can stored inside.
+    gKeyDetectQ = xQueueCreate( 3, sizeof(buttonReadStatus_t));    //!< 3 number of keys can stored inside.
     if( NULL == gKeyDetectQ )
     {
         while(1);

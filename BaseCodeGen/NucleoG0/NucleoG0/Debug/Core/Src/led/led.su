@@ -1,6 +1,9 @@
-led.c:35:6:ledTask	16	static
-led.c:72:6:intLed	16	static
-led.c:88:6:ledTurnOnAll	16	static
-led.c:103:6:ledTurnOffAll	16	static
-led.c:118:6:ledTurnOn	16	static
-led.c:130:6:ledTurnOff	16	static
+led.c:60:6:ledTask	16	static
+led.c:98:6:intLed	16	static
+led.c:114:6:ledTurnOnAll	16	static
+led.c:129:6:ledTurnOffAll	16	static
+led.c:144:6:ledTurnOn	16	static
+led.c:156:6:ledTurnOff	16	static
+led.c:167:6:intLedStrip	8	static
+led.c:197:6:updateLedStrip	16	static
+led.c:211:6:selfTestPowerOnLedStrip	40	static
