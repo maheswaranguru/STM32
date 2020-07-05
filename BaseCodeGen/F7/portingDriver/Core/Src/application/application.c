@@ -13,6 +13,7 @@
 //#include "button.h"
 //#include "led.h"
 #include "debugConsole.h"
+#include "udpHandler.h"
 
 //#include "../encoder/encoder.h"
 
@@ -26,6 +27,7 @@ const sysTask_t sysTask[] =
  // { (TaskFunction_t) buttonTask,          "button",           128, 0, osPriorityNormal, NULL },
     { (TaskFunction_t) debugconsoleTask,    "debugconsole",     254, 0, osPriorityNormal, NULL },
 //    { (TaskFunction_t) voltageMgrTask, 		"VoltageManager",   254, 0, osPriorityNormal, NULL }
+    { (TaskFunction_t) udpHandlerTask,    "debugconsole",     512, 0, osPriorityHigh, NULL },
 
 };
 
