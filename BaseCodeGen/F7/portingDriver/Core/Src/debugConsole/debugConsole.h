@@ -17,7 +17,7 @@
 #define HEX     16
 #define BINARY  2
 
-#define DEBUG_UART	USART3
+#define DEBUG_UART	USART1
 
 extern QueueHandle_t gDebugConsoleQ;
 extern SemaphoreHandle_t xMutexDebugUart;

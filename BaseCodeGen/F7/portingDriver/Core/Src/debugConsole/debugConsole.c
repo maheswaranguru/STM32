@@ -23,6 +23,7 @@ static bool debugConsoleInit( void );
 char tempBuff[50] = {0};
 bool mDebugConInit = false;
 
+uint8_t number =0;
 
 void debugconsoleTask(void)
 {
@@ -51,12 +52,12 @@ void debugconsoleTask(void)
 
     for (;;)
     {
-//        debugTextValue("\nNOW I CAN PRINT DECIMAL\t", number, DECIMAL );
-//        vTaskDelay(10);
-//        debugTextValue("\nNOW I CAN PRINT HEX\t", number, HEX );
-//        vTaskDelay(10);
-//        debugTextValue("\nNOW I CAN PRINT BINARY\t", number, BINARY );
-//        number++;
+        debugTextValue("\nNOW I CAN PRINT DECIMAL\t", number, DECIMAL );
+        vTaskDelay(10);
+        debugTextValue("\nNOW I CAN PRINT HEX\t", number, HEX );
+        vTaskDelay(10);
+        debugTextValue("\nNOW I CAN PRINT BINARY\t", number, BINARY );
+        number++;
 
     	if( HAL_UART_ERROR_NONE != HAL_UART_GetError(&debugPort) )
     	{
@@ -64,7 +65,7 @@ void debugconsoleTask(void)
     		debugConsoleInit();
     	}
 
-        vTaskDelay(1);
+        vTaskDelay(1000);
 
     }
 }

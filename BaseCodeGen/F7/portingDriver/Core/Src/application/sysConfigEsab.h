@@ -24,6 +24,10 @@
 #include "stm32f4xx_hal.h"
 #endif
 
+#if defined(STM32F769xx)
+#include "stm32f7xx_hal.h"
+#endif
+
 
 
 #ifndef ON
