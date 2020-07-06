@@ -31,8 +31,8 @@ typedef enum{
 	//BUTTON_TASK,
 	CONSOLE_TASK,
 //	VOLTMANAGER,
+	TCPIP_HANDLE_TASK,
 	UDP_HANDLE_TASK,
-
 
 	MAXMUM_TASK
 }sysTaskList_t;

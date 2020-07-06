@@ -11,6 +11,8 @@
 #include "cmsis_os.h"
 #include "debugConsole.h"
 
+#define MAX_CBUFF 100
+
 UART_HandleTypeDef debugPort;          //!< There is a LL driver / Generated code of STM32 FW have limitation
                                     // ... We need to keep the variable name for uart configuration structer
 
@@ -22,6 +24,12 @@ static bool debugConsoleInit( void );
 
 char tempBuff[50] = {0};
 bool mDebugConInit = false;
+
+char circularBuff[MAX_CBUFF] = { 0 } ;
+uint16_t bufferFillPtr = 0;
+uint16_t bufferClearPtr = 0;
+
+
 
 uint8_t number =0;
 
@@ -243,7 +251,42 @@ void reverseStr(char *str, uint8_t size)
 
 }
 
+/*********************************************************************************
+ *Name :- addToTxBuff
+ *Para1:-
+ *Para2:-
+ *Return:-
+ *Details:-
+ **********************************************************************************/
+bool addToTxBuff( char *text )
+{
+	bool retValue = true;
+	uint16_t remSpace = MAX_CBUFF - bufferFillPtr;
+	uint16_t needSpace = strlen(text);
+	uint16_t actualRemSpace = remSpace + bufferClearPtr;
 
+	if( actualRemSpace >= needSpace )
+	{
+
+		if( remSpace >= needSpace )
+		{
+			memcpy(&circularBuff[bufferFillPtr+1], text, needSpace );
+			bufferFillPtr += needSpace;
+		}else
+		{
+
+			memcpy(&circularBuff[bufferFillPtr+1], text, remSpace );
+			memcpy(&circularBuff[bufferFillPtr+1], text, (needSpace- remSpace) );
+			bufferFillPtr = needSpace- remSpace;
+		}
+	}else
+	{
+		retValue = false;
+		//!< return false if you don't want to over write...  Else NO need this check.
+	}
+
+return retValue;
+}
 
 
 

@@ -34,7 +34,7 @@ void udpHandlerTask( void * pvParameters )
 	char retValue = 0;
 
 	//udpSocInit();
-	vTaskDelay(2000);
+	vTaskDelay(1000);
 
 	for(;;)
 	{
@@ -52,7 +52,7 @@ void udpHandlerTask( void * pvParameters )
 		  if( NULL == buf )
 		  buf=netbuf_new();
 		  else
-			  debugText("\nBuffer allocated !\n");
+			  debugText("\nBuffer allocated !");
 //
 //
 		  retValue = netbuf_ref(buf,&buffer,strlen(buffer));
