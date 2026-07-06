@@ -40,7 +40,7 @@
 #ifndef MAX_CMD_LENGTH
 #define MAX_CMD_LENGTH  25
 #endif
-/*
+
 #ifndef DEBUG_UART_GPIO_PORT
 #define DEBUG_UART_GPIO_PORT   GPIOA
 #endif
@@ -69,10 +69,6 @@
 #define DEBUG_BAUDRATE 115200
 #endif
 
-
-
-
-*/
 #define FORMATED_PRINTF
 
 /*******************************************************************
