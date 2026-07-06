@@ -29,4 +29,10 @@ typedef enum {
 	NINE,
 }eNumber_t;
 
+typedef enum {
+	BINARY = 2,
+	OCT = 8,
+	DECIMAL = 10,
+	HEX = 16,
+}eNumberSystem_t;
 #endif /* INC_MACRO_H_ */
